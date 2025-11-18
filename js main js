@@ -1,0 +1,495 @@
+// ============================================================================
+// DIABETES & NEUROPATHY MANAGEMENT SYSTEM - MAIN JAVASCRIPT
+// ============================================================================
+
+// ============================================================================
+// 1. CONFIGURATION & INITIALIZATION
+// ============================================================================
+
+const CONFIG = {
+    storageKeys: {
+        data: 'diabetesData',
+        protocol: 'protocolState',
+        meals: 'mealPlans',
+        consultations: 'consultations'
+    },
+    charts: {},
+    currentDate: new Date().toISOString().split('T')[0]
+};
+
+// ============================================================================
+// 2. LOCAL STORAGE MANAGEMENT
+// ============================================================================
+
+class DataManager {
+    static saveData(key, data) {
+        try {
+            localStorage.setItem(key, JSON.stringify(data));
+            return true;
+        } catch (error) {
+            console.error('Error saving data:', error);
+            return false;
+        }
+    }
+
+    static loadData(key) {
+        try {
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : null;
+        } catch (error) {
+            console.error('Error loading data:', error);
+            return null;
+        }
+    }
+
+    static getAllTrackingData() {
+        return this.loadData(CONFIG.storageKeys.data) || [];
+    }
+
+    static addTrackingEntry(entry) {
+        const data = this.getAllTrackingData();
+        entry.id = Date.now();
+        entry.timestamp = new Date().toISOString();
+        data.push(entry);
+        this.saveData(CONFIG.storageKeys.data, data);
+        return entry;
+    }
+
+    static deleteEntry(id) {
+        let data = this.getAllTrackingData();
+        data = data.filter(entry => entry.id !== id);
+        this.saveData(CONFIG.storageKeys.data, data);
+    }
+
+    static getLatestEntry() {
+        const data = this.getAllTrackingData();
+        return data.length > 0 ? data[data.length - 1] : null;
+    }
+
+    static getEntriesByDateRange(startDate, endDate) {
+        const data = this.getAllTrackingData();
+        return data.filter(entry => {
+            const entryDate = entry.date;
+            return entryDate >= startDate && entryDate <= endDate;
+        });
+    }
+}
+
+// ============================================================================
+// 3. PROTOCOL STATE MANAGEMENT
+// ============================================================================
+
+class ProtocolManager {
+    static getState() {
+        const state = DataManager.loadData(CONFIG.storageKeys.protocol);
+        const today = CONFIG.currentDate;
+        
+        if (!state || state.date !== today) {
+            return this.resetState();
+        }
+        return state;
+    }
+
+    static resetState() {
+        const newState = {
+            date: CONFIG.currentDate,
+            completed: {},
+            squatCount: 0,
+            lastSquatTime: null
+        };
+        this.saveState(newState);
+        return newState;
+    }
+
+    static saveState(state) {
+        DataManager.saveData(CONFIG.storageKeys.protocol, state);
+    }
+
+    static toggleItem(itemId) {
+        const state = this.getState();
+        state.completed[itemId] = !state.completed[itemId];
+        this.saveState(state);
+        return state.completed[itemId];
+    }
+
+    static incrementSquats(count = 1) {
+        const state = this.getState();
+        state.squatCount += count;
+        state.lastSquatTime = new Date().toISOString();
+        this.saveState(state);
+        return state.squatCount;
+    }
+
+    static getSquatCount() {
+        const state = this.getState();
+        return state.squatCount || 0;
+    }
+}
+
+// ============================================================================
+// 4. DASHBOARD DISPLAY FUNCTIONS
+// ============================================================================
+
+function updateDashboard() {
+    const latest = DataManager.getLatestEntry();
+    
+    if (latest) {
+        // Update metric displays
+        updateElement('currentWeight', `${latest.weight} lbs`);
+        updateElement('currentGlucose', `${latest.glucoseFasting} mg/dL`);
+        updateElement('currentPain', `${latest.painLevel}/10`);
+        
+        // Update last update time
+        const lastUpdate = new Date(latest.timestamp);
+        updateElement('lastUpdate', formatDateTime(lastUpdate));
+    } else {
+        // Default values if no data
+        updateElement('currentWeight', '--- lbs');
+        updateElement('currentGlucose', '--- mg/dL');
+        updateElement('currentPain', '--/10');
+        updateElement('lastUpdate', 'Sin datos registrados');
+    }
+
+    // Update squat counter
+    const squatCount = ProtocolManager.getSquatCount();
+    updateElement('squatCount', squatCount);
+
+    // Update protocol checklist
+    updateProtocolChecklist();
+
+    // Update charts
+    updateCharts();
+}
+
+function updateElement(id, value) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.textContent = value;
+    }
+}
+
+function formatDateTime(date) {
+    const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    };
+    return date.toLocaleDateString('es-ES', options);
+}
+
+// ============================================================================
+// 5. PROTOCOL CHECKLIST FUNCTIONS
+// ============================================================================
+
+function updateProtocolChecklist() {
+    const state = ProtocolManager.getState();
+    const checkboxes = document.querySelectorAll('.protocol-checkbox');
+    
+    checkboxes.forEach(checkbox => {
+        const itemId = checkbox.dataset.item;
+        checkbox.checked = state.completed[itemId] || false;
+    });
+
+    updateProtocolProgress();
+}
+
+function updateProtocolProgress() {
+    const state = ProtocolManager.getState();
+    const totalItems = document.querySelectorAll('.protocol-checkbox').length;
+    const completedItems = Object.values(state.completed).filter(v => v).length;
+    
+    const progressElement = document.getElementById('protocolProgress');
+    if (progressElement) {
+        const percentage = totalItems > 0 ? (completedItems / totalItems * 100).toFixed(0) : 0;
+        progressElement.textContent = `${completedItems}/${totalItems} (${percentage}%)`;
+    }
+}
+
+function handleProtocolCheckbox(checkbox) {
+    const itemId = checkbox.dataset.item;
+    ProtocolManager.toggleItem(itemId);
+    updateProtocolProgress();
+}
+
+// ============================================================================
+// 6. SQUAT COUNTER FUNCTIONS
+// ============================================================================
+
+function incrementSquats() {
+    const count = ProtocolManager.incrementSquats(10);
+    updateElement('squatCount', count);
+    
+    // Visual feedback
+    const button = document.getElementById('squatButton');
+    if (button) {
+        button.classList.add('scale-110');
+        setTimeout(() => button.classList.remove('scale-110'), 200);
+    }
+    
+    // Show achievement messages
+    if (count === 50) {
+        showNotification('¡Excelente! Has completado 50 sentadillas 🎉');
+    } else if (count === 100) {
+        showNotification('¡Increíble! 100 sentadillas cumplidas 🔥');
+    } else if (count >= 150) {
+        showNotification('¡ERES UNA MÁQUINA! ' + count + ' sentadillas 💪');
+    }
+}
+
+function resetSquats() {
+    if (confirm('¿Estás seguro de reiniciar el contador de sentadillas?')) {
+        const state = ProtocolManager.getState();
+        state.squatCount = 0;
+        ProtocolManager.saveState(state);
+        updateElement('squatCount', 0);
+        showNotification('Contador reiniciado');
+    }
+}
+
+// ============================================================================
+// 7. CHART.JS VISUALIZATION
+// ============================================================================
+
+function updateCharts() {
+    const data = DataManager.getAllTrackingData();
+    
+    if (data.length === 0) {
+        console.log('No data available for charts');
+        return;
+    }
+
+    // Get last 30 days of data
+    const last30Days = data.slice(-30);
+    
+    updateWeightChart(last30Days);
+    updateGlucoseChart(last30Days);
+}
+
+function updateWeightChart(data) {
+    const ctx = document.getElementById('weightChart');
+    if (!ctx) return;
+
+    const labels = data.map(entry => entry.date);
+    const weights = data.map(entry => entry.weight);
+
+    if (CONFIG.charts.weight) {
+        CONFIG.charts.weight.destroy();
+    }
+
+    CONFIG.charts.weight = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Peso (lbs)',
+                data: weights,
+                borderColor: 'rgb(59, 130, 246)',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: 'Evolución del Peso (Últimos 30 días)'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    title: {
+                        display: true,
+                        text: 'Peso (lbs)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function updateGlucoseChart(data) {
+    const ctx = document.getElementById('glucoseChart');
+    if (!ctx) return;
+
+    const labels = data.map(entry => entry.date);
+    const fasting = data.map(entry => entry.glucoseFasting);
+    const postMeal = data.map(entry => entry.glucosePostMeal);
+
+    if (CONFIG.charts.glucose) {
+        CONFIG.charts.glucose.destroy();
+    }
+
+    CONFIG.charts.glucose = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Glucosa en Ayunas',
+                    data: fasting,
+                    borderColor: 'rgb(34, 197, 94)',
+                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                    tension: 0.4
+                },
+                {
+                    label: 'Glucosa Post-Comida',
+                    data: postMeal,
+                    borderColor: 'rgb(249, 115, 22)',
+                    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: 'Niveles de Glucosa (mg/dL)'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    title: {
+                        display: true,
+                        text: 'Glucosa (mg/dL)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// ============================================================================
+// 8. NOTIFICATION SYSTEM
+// ============================================================================
+
+function showNotification(message, type = 'success') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        background: ${type === 'success' ? '#10b981' : '#ef4444'};
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 9999;
+        animation: slideIn 0.3s ease-out;
+    `;
+
+    document.body.appendChild(notification);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// ============================================================================
+// 9. UTILITY FUNCTIONS
+// ============================================================================
+
+function exportData() {
+    const data = DataManager.getAllTrackingData();
+    const dataStr = JSON.stringify(data, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `diabetes-data-${CONFIG.currentDate}.json`;
+    link.click();
+    
+    showNotification('Datos exportados correctamente');
+}
+
+function importData(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            DataManager.saveData(CONFIG.storageKeys.data, data);
+            showNotification('Datos importados correctamente');
+            updateDashboard();
+        } catch (error) {
+            showNotification('Error al importar datos', 'error');
+        }
+    };
+    reader.readAsText(file);
+}
+
+// ============================================================================
+// 10. EVENT LISTENERS & INITIALIZATION
+// ============================================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Diabetes Management System initialized');
+    
+    // Initialize dashboard if on index page
+    if (document.getElementById('currentWeight')) {
+        updateDashboard();
+    }
+
+    // Protocol checkboxes
+    const checkboxes = document.querySelectorAll('.protocol-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            handleProtocolCheckbox(this);
+        });
+    });
+
+    // Squat button
+    const squatButton = document.getElementById('squatButton');
+    if (squatButton) {
+        squatButton.addEventListener('click', incrementSquats);
+    }
+
+    // Export button
+    const exportButton = document.getElementById('exportData');
+    if (exportButton) {
+        exportButton.addEventListener('click', exportData);
+    }
+
+    // Check if new day - reset protocol
+    const lastState = DataManager.loadData(CONFIG.storageKeys.protocol);
+    if (lastState && lastState.date !== CONFIG.currentDate) {
+        ProtocolManager.resetState();
+        showNotification('Nuevo día - Protocolo reiniciado');
+    }
+});
+
+// ============================================================================
+// 11. GLOBAL FUNCTIONS (accessible from HTML)
+// ============================================================================
+
+window.DataManager = DataManager;
+window.ProtocolManager = ProtocolManager;
+window.incrementSquats = incrementSquats;
+window.resetSquats = resetSquats;
+window.exportData = exportData;
+window.importData = importData;
+window.showNotification = showNotification;
+
+console.log('Main.js loaded successfully');

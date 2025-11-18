@@ -1,0 +1,497 @@
+    1	/* Reset Metabólico - Custom Styles */
+     2	
+     3	:root {
+     4	    --primary-color: #3b82f6;
+     5	    --secondary-color: #ef4444;
+     6	    --success-color: #10b981;
+     7	    --warning-color: #f59e0b;
+     8	    --danger-color: #ef4444;
+     9	    --dark: #1f2937;
+    10	    --light: #f9fafb;
+    11	}
+    12	
+    13	* {
+    14	    margin: 0;
+    15	    padding: 0;
+    16	    box-sizing: border-box;
+    17	}
+    18	
+    19	body {
+    20	    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    21	}
+    22	
+    23	/* Navigation Links */
+    24	.nav-link {
+    25	    display: flex;
+    26	    align-items: center;
+    27	    justify-content: center;
+    28	    gap: 0.5rem;
+    29	    padding: 0.75rem 1rem;
+    30	    border-radius: 0.5rem;
+    31	    background-color: #f3f4f6;
+    32	    color: #4b5563;
+    33	    text-decoration: none;
+    34	    font-weight: 500;
+    35	    transition: all 0.3s ease;
+    36	    text-align: center;
+    37	}
+    38	
+    39	.nav-link:hover {
+    40	    background-color: #e5e7eb;
+    41	    transform: translateY(-2px);
+    42	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    43	}
+    44	
+    45	.nav-link.active {
+    46	    background-color: #3b82f6;
+    47	    color: white;
+    48	}
+    49	
+    50	/* Protocol Checklist */
+    51	.protocol-item {
+    52	    display: flex;
+    53	    align-items: center;
+    54	    padding: 1rem;
+    55	    background-color: #f9fafb;
+    56	    border-radius: 0.5rem;
+    57	    border: 2px solid #e5e7eb;
+    58	    transition: all 0.3s ease;
+    59	}
+    60	
+    61	.protocol-item:hover {
+    62	    border-color: #3b82f6;
+    63	    background-color: white;
+    64	}
+    65	
+    66	.task-checkbox {
+    67	    width: 1.5rem;
+    68	    height: 1.5rem;
+    69	    margin-right: 1rem;
+    70	    cursor: pointer;
+    71	    accent-color: #10b981;
+    72	}
+    73	
+    74	.protocol-item label {
+    75	    cursor: pointer;
+    76	    flex: 1;
+    77	    user-select: none;
+    78	}
+    79	
+    80	.protocol-item .time {
+    81	    font-weight: 700;
+    82	    color: #3b82f6;
+    83	}
+    84	
+    85	.task-checkbox:checked + label {
+    86	    text-decoration: line-through;
+    87	    opacity: 0.6;
+    88	}
+    89	
+    90	/* Quick Action Cards */
+    91	.quick-action-card {
+    92	    display: flex;
+    93	    flex-direction: column;
+    94	    align-items: center;
+    95	    justify-content: center;
+    96	    padding: 1.5rem;
+    97	    background-color: white;
+    98	    border-radius: 0.75rem;
+    99	    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+   100	    text-decoration: none;
+   101	    color: #4b5563;
+   102	    transition: all 0.3s ease;
+   103	    text-align: center;
+   104	}
+   105	
+   106	.quick-action-card:hover {
+   107	    transform: translateY(-5px);
+   108	    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+   109	}
+   110	
+   111	/* Form Inputs */
+   112	input[type="text"],
+   113	input[type="number"],
+   114	input[type="date"],
+   115	input[type="time"],
+   116	textarea,
+   117	select {
+   118	    width: 100%;
+   119	    padding: 0.75rem;
+   120	    border: 2px solid #e5e7eb;
+   121	    border-radius: 0.5rem;
+   122	    font-size: 1rem;
+   123	    transition: all 0.3s ease;
+   124	    font-family: inherit;
+   125	}
+   126	
+   127	input:focus,
+   128	textarea:focus,
+   129	select:focus {
+   130	    outline: none;
+   131	    border-color: #3b82f6;
+   132	    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+   133	}
+   134	
+   135	/* Buttons */
+   136	.btn {
+   137	    padding: 0.75rem 1.5rem;
+   138	    border-radius: 0.5rem;
+   139	    font-weight: 600;
+   140	    cursor: pointer;
+   141	    transition: all 0.3s ease;
+   142	    border: none;
+   143	    font-family: inherit;
+   144	}
+   145	
+   146	.btn-primary {
+   147	    background-color: #3b82f6;
+   148	    color: white;
+   149	}
+   150	
+   151	.btn-primary:hover {
+   152	    background-color: #2563eb;
+   153	    transform: translateY(-2px);
+   154	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+   155	}
+   156	
+   157	.btn-success {
+   158	    background-color: #10b981;
+   159	    color: white;
+   160	}
+   161	
+   162	.btn-success:hover {
+   163	    background-color: #059669;
+   164	}
+   165	
+   166	.btn-danger {
+   167	    background-color: #ef4444;
+   168	    color: white;
+   169	}
+   170	
+   171	.btn-danger:hover {
+   172	    background-color: #dc2626;
+   173	}
+   174	
+   175	/* Data Table */
+   176	.data-table {
+   177	    width: 100%;
+   178	    border-collapse: collapse;
+   179	    background-color: white;
+   180	    border-radius: 0.5rem;
+   181	    overflow: hidden;
+   182	    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+   183	}
+   184	
+   185	.data-table thead {
+   186	    background-color: #f3f4f6;
+   187	}
+   188	
+   189	.data-table th {
+   190	    padding: 1rem;
+   191	    text-align: left;
+   192	    font-weight: 600;
+   193	    color: #374151;
+   194	    border-bottom: 2px solid #e5e7eb;
+   195	}
+   196	
+   197	.data-table td {
+   198	    padding: 1rem;
+   199	    border-bottom: 1px solid #e5e7eb;
+   200	}
+   201	
+   202	.data-table tbody tr:hover {
+   203	    background-color: #f9fafb;
+   204	}
+   205	
+   206	/* Badge */
+   207	.badge {
+   208	    display: inline-block;
+   209	    padding: 0.25rem 0.75rem;
+   210	    border-radius: 9999px;
+   211	    font-size: 0.875rem;
+   212	    font-weight: 600;
+   213	}
+   214	
+   215	.badge-green {
+   216	    background-color: #d1fae5;
+   217	    color: #065f46;
+   218	}
+   219	
+   220	.badge-yellow {
+   221	    background-color: #fef3c7;
+   222	    color: #92400e;
+   223	}
+   224	
+   225	.badge-red {
+   226	    background-color: #fee2e2;
+   227	    color: #991b1b;
+   228	}
+   229	
+   230	/* Glucose Status Colors */
+   231	.glucose-low {
+   232	    color: #10b981;
+   233	}
+   234	
+   235	.glucose-normal {
+   236	    color: #10b981;
+   237	}
+   238	
+   239	.glucose-elevated {
+   240	    color: #f59e0b;
+   241	}
+   242	
+   243	.glucose-high {
+   244	    color: #ef4444;
+   245	}
+   246	
+   247	/* Recipe Card */
+   248	.recipe-card {
+   249	    background-color: white;
+   250	    border-radius: 0.75rem;
+   251	    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+   252	    overflow: hidden;
+   253	    transition: all 0.3s ease;
+   254	}
+   255	
+   256	.recipe-card:hover {
+   257	    transform: translateY(-5px);
+   258	    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+   259	}
+   260	
+   261	.recipe-header {
+   262	    padding: 1.5rem;
+   263	    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+   264	    color: white;
+   265	}
+   266	
+   267	.recipe-body {
+   268	    padding: 1.5rem;
+   269	}
+   270	
+   271	.recipe-macros {
+   272	    display: grid;
+   273	    grid-template-columns: repeat(4, 1fr);
+   274	    gap: 1rem;
+   275	    margin-top: 1rem;
+   276	}
+   277	
+   278	.macro-item {
+   279	    text-align: center;
+   280	    padding: 0.5rem;
+   281	    background-color: #f9fafb;
+   282	    border-radius: 0.5rem;
+   283	}
+   284	
+   285	/* Progress Ring */
+   286	.progress-ring {
+   287	    width: 150px;
+   288	    height: 150px;
+   289	}
+   290	
+   291	.progress-ring-circle {
+   292	    transition: stroke-dashoffset 0.5s;
+   293	    transform: rotate(-90deg);
+   294	    transform-origin: 50% 50%;
+   295	}
+   296	
+   297	/* Alert Box */
+   298	.alert {
+   299	    padding: 1rem 1.5rem;
+   300	    border-radius: 0.5rem;
+   301	    margin-bottom: 1rem;
+   302	    border-left: 4px solid;
+   303	}
+   304	
+   305	.alert-info {
+   306	    background-color: #dbeafe;
+   307	    border-color: #3b82f6;
+   308	    color: #1e40af;
+   309	}
+   310	
+   311	.alert-warning {
+   312	    background-color: #fef3c7;
+   313	    border-color: #f59e0b;
+   314	    color: #92400e;
+   315	}
+   316	
+   317	.alert-success {
+   318	    background-color: #d1fae5;
+   319	    border-color: #10b981;
+   320	    color: #065f46;
+   321	}
+   322	
+   323	.alert-danger {
+   324	    background-color: #fee2e2;
+   325	    border-color: #ef4444;
+   326	    color: #991b1b;
+   327	}
+   328	
+   329	/* Mobile Menu Toggle */
+   330	@media (max-width: 1024px) {
+   331	    #mobileMenu.hidden {
+   332	        display: none;
+   333	    }
+   334	    
+   335	    #mobileMenu {
+   336	        display: block;
+   337	    }
+   338	}
+   339	
+   340	/* Animations */
+   341	@keyframes fadeIn {
+   342	    from {
+   343	        opacity: 0;
+   344	        transform: translateY(20px);
+   345	    }
+   346	    to {
+   347	        opacity: 1;
+   348	        transform: translateY(0);
+   349	    }
+   350	}
+   351	
+   352	.fade-in {
+   353	    animation: fadeIn 0.5s ease-out;
+   354	}
+   355	
+   356	@keyframes pulse {
+   357	    0%, 100% {
+   358	        opacity: 1;
+   359	    }
+   360	    50% {
+   361	        opacity: 0.5;
+   362	    }
+   363	}
+   364	
+   365	.pulse {
+   366	    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+   367	}
+   368	
+   369	/* Print Styles */
+   370	@media print {
+   371	    .no-print {
+   372	        display: none !important;
+   373	    }
+   374	    
+   375	    body {
+   376	        background: white;
+   377	    }
+   378	    
+   379	    .bg-gradient-to-br {
+   380	        background: white !important;
+   381	    }
+   382	}
+   383	
+   384	/* Scrollbar Styling */
+   385	::-webkit-scrollbar {
+   386	    width: 10px;
+   387	}
+   388	
+   389	::-webkit-scrollbar-track {
+   390	    background: #f1f1f1;
+   391	}
+   392	
+   393	::-webkit-scrollbar-thumb {
+   394	    background: #888;
+   395	    border-radius: 5px;
+   396	}
+   397	
+   398	::-webkit-scrollbar-thumb:hover {
+   399	    background: #555;
+   400	}
+   401	
+   402	/* Loading Spinner */
+   403	.spinner {
+   404	    border: 4px solid #f3f3f3;
+   405	    border-top: 4px solid #3b82f6;
+   406	    border-radius: 50%;
+   407	    width: 40px;
+   408	    height: 40px;
+   409	    animation: spin 1s linear infinite;
+   410	}
+   411	
+   412	@keyframes spin {
+   413	    0% { transform: rotate(0deg); }
+   414	    100% { transform: rotate(360deg); }
+   415	}
+   416	
+   417	/* Tooltip */
+   418	.tooltip {
+   419	    position: relative;
+   420	    display: inline-block;
+   421	}
+   422	
+   423	.tooltip .tooltiptext {
+   424	    visibility: hidden;
+   425	    width: 200px;
+   426	    background-color: #1f2937;
+   427	    color: white;
+   428	    text-align: center;
+   429	    border-radius: 6px;
+   430	    padding: 8px;
+   431	    position: absolute;
+   432	    z-index: 1;
+   433	    bottom: 125%;
+   434	    left: 50%;
+   435	    margin-left: -100px;
+   436	    opacity: 0;
+   437	    transition: opacity 0.3s;
+   438	    font-size: 0.875rem;
+   439	}
+   440	
+   441	.tooltip:hover .tooltiptext {
+   442	    visibility: visible;
+   443	    opacity: 1;
+   444	}
+   445	
+   446	/* Success Animation */
+   447	@keyframes checkmark {
+   448	    0% {
+   449	        stroke-dashoffset: 100;
+   450	    }
+   451	    100% {
+   452	        stroke-dashoffset: 0;
+   453	    }
+   454	}
+   455	
+   456	.checkmark {
+   457	    animation: checkmark 0.5s ease-in-out;
+   458	}
+   459	
+   460	/* Card Hover Effect */
+   461	.card-hover {
+   462	    transition: all 0.3s ease;
+   463	}
+   464	
+   465	.card-hover:hover {
+   466	    transform: translateY(-5px) scale(1.02);
+   467	    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+   468	}
+   469	
+   470	/* Mobile Responsive Adjustments */
+   471	@media (max-width: 640px) {
+   472	    .container {
+   473	        padding-left: 1rem;
+   474	        padding-right: 1rem;
+   475	    }
+   476	    
+   477	    h1 {
+   478	        font-size: 1.5rem;
+   479	    }
+   480	    
+   481	    h2 {
+   482	        font-size: 1.25rem;
+   483	    }
+   484	    
+   485	    .quick-action-card {
+   486	        padding: 1rem;
+   487	    }
+   488	    
+   489	    .protocol-item {
+   490	        flex-direction: column;
+   491	        align-items: flex-start;
+   492	    }
+   493	    
+   494	    .task-checkbox {
+   495	        margin-bottom: 0.5rem;
+   496	    }
+   497	}

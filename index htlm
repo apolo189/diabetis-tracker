@@ -1,0 +1,289 @@
+   1	<!DOCTYPE html>
+     2	<html lang="es">
+     3	<head>
+     4	    <meta charset="UTF-8">
+     5	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     6	    <title>Reset Metabólico - Dashboard</title>
+     7	    <script src="https://cdn.tailwindcss.com"></script>
+     8	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+     9	    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    10	    <link rel="stylesheet" href="css/style.css">
+    11	</head>
+    12	<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    13	    
+    14	    <!-- Navigation -->
+    15	    <nav class="bg-white shadow-lg sticky top-0 z-50">
+    16	        <div class="container mx-auto px-4 py-4">
+    17	            <div class="flex items-center justify-between">
+    18	                <div class="flex items-center space-x-3">
+    19	                    <i class="fas fa-heartbeat text-3xl text-red-500"></i>
+    20	                    <h1 class="text-2xl font-bold text-gray-800">Reset Metabólico</h1>
+    21	                </div>
+    22	                <button id="menuBtn" class="lg:hidden text-gray-600">
+    23	                    <i class="fas fa-bars text-2xl"></i>
+    24	                </button>
+    25	            </div>
+    26	            
+    27	            <!-- Mobile Menu -->
+    28	            <div id="mobileMenu" class="hidden lg:block mt-4">
+    29	                <div class="grid grid-cols-2 lg:grid-cols-6 gap-2">
+    30	                    <a href="index.html" class="nav-link active">
+    31	                        <i class="fas fa-home"></i> Dashboard
+    32	                    </a>
+    33	                    <a href="tracking.html" class="nav-link">
+    34	                        <i class="fas fa-clipboard-list"></i> Tracking
+    35	                    </a>
+    36	                    <a href="protocol.html" class="nav-link">
+    37	                        <i class="fas fa-clock"></i> Protocolo
+    38	                    </a>
+    39	                    <a href="supplements.html" class="nav-link">
+    40	                        <i class="fas fa-pills"></i> Suplementos
+    41	                    </a>
+    42	                    <a href="meals.html" class="nav-link">
+    43	                        <i class="fas fa-utensils"></i> Comidas
+    44	                    </a>
+    45	                    <a href="recipes.html" class="nav-link">
+    46	                        <i class="fas fa-book"></i> Recetas
+    47	                    </a>
+    48	                    <a href="exercise.html" class="nav-link">
+    49	                        <i class="fas fa-running"></i> Ejercicio
+    50	                    </a>
+    51	                    <a href="medications.html" class="nav-link">
+    52	                        <i class="fas fa-prescription-bottle"></i> Medicamentos
+    53	                    </a>
+    54	                    <a href="consultations.html" class="nav-link">
+    55	                        <i class="fas fa-user-md"></i> Consultas
+    56	                    </a>
+    57	                    <a href="analysis.html" class="nav-link">
+    58	                        <i class="fas fa-chart-line"></i> Análisis
+    59	                    </a>
+    60	                    <a href="goals.html" class="nav-link">
+    61	                        <i class="fas fa-bullseye"></i> Metas
+    62	                    </a>
+    63	                    <a href="resources.html" class="nav-link">
+    64	                        <i class="fas fa-graduation-cap"></i> Recursos
+    65	                    </a>
+    66	                </div>
+    67	            </div>
+    68	        </div>
+    69	    </nav>
+    70	
+    71	    <!-- Main Content -->
+    72	    <div class="container mx-auto px-4 py-8">
+    73	        
+    74	        <!-- Welcome Section -->
+    75	        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+    76	            <h2 class="text-3xl font-bold text-gray-800 mb-2">
+    77	                ¡Bienvenido a tu Reset Metabólico! 🎯
+    78	            </h2>
+    79	            <p class="text-gray-600">
+    80	                Hoy es <span id="currentDate" class="font-semibold"></span> - 
+    81	                Día <span id="dayStreak" class="font-bold text-green-600">1</span> de tu transformación
+    82	            </p>
+    83	        </div>
+    84	
+    85	        <!-- Key Metrics Cards -->
+    86	        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+    87	            
+    88	            <!-- Weight Card -->
+    89	            <div class="bg-white rounded-xl shadow-lg p-6">
+    90	                <div class="flex items-center justify-between mb-4">
+    91	                    <h3 class="text-lg font-semibold text-gray-700">Peso</h3>
+    92	                    <i class="fas fa-weight text-2xl text-blue-500"></i>
+    93	                </div>
+    94	                <div class="mb-2">
+    95	                    <span class="text-4xl font-bold text-gray-800" id="currentWeight">251</span>
+    96	                    <span class="text-xl text-gray-600">lbs</span>
+    97	                </div>
+    98	                <div class="flex items-center justify-between text-sm">
+    99	                    <span class="text-gray-600">Meta: 230 lbs</span>
+   100	                    <span class="font-semibold text-blue-600" id="weightToLose">21 lbs por perder</span>
+   101	                </div>
+   102	                <div class="mt-4 bg-gray-200 rounded-full h-3">
+   103	                    <div class="bg-blue-500 h-3 rounded-full transition-all duration-500" 
+   104	                         id="weightProgress" style="width: 0%"></div>
+   105	                </div>
+   106	            </div>
+   107	
+   108	            <!-- Glucose Card -->
+   109	            <div class="bg-white rounded-xl shadow-lg p-6">
+   110	                <div class="flex items-center justify-between mb-4">
+   111	                    <h3 class="text-lg font-semibold text-gray-700">Glucosa</h3>
+   112	                    <i class="fas fa-tint text-2xl text-red-500"></i>
+   113	                </div>
+   114	                <div class="mb-2">
+   115	                    <span class="text-4xl font-bold text-gray-800" id="currentGlucose">168</span>
+   116	                    <span class="text-xl text-gray-600">mg/dL</span>
+   117	                </div>
+   118	                <div class="flex items-center justify-between text-sm">
+   119	                    <span class="text-gray-600">Meta: &lt;130 mg/dL</span>
+   120	                    <span class="font-semibold text-red-600" id="glucoseStatus">Alto</span>
+   121	                </div>
+   122	                <div class="mt-4 bg-gray-200 rounded-full h-3">
+   123	                    <div class="bg-red-500 h-3 rounded-full transition-all duration-500" 
+   124	                         id="glucoseProgress" style="width: 100%"></div>
+   125	                </div>
+   126	            </div>
+   127	
+   128	            <!-- Neuropathy Pain Card -->
+   129	            <div class="bg-white rounded-xl shadow-lg p-6">
+   130	                <div class="flex items-center justify-between mb-4">
+   131	                    <h3 class="text-lg font-semibold text-gray-700">Dolor Neuropatía</h3>
+   132	                    <i class="fas fa-bolt text-2xl text-yellow-500"></i>
+   133	                </div>
+   134	                <div class="mb-2">
+   135	                    <span class="text-4xl font-bold text-gray-800" id="currentPain">10</span>
+   136	                    <span class="text-xl text-gray-600">/ 10</span>
+   137	                </div>
+   138	                <div class="flex items-center justify-between text-sm">
+   139	                    <span class="text-gray-600">Meta: 0 / 10</span>
+   140	                    <span class="font-semibold text-red-600">Severo</span>
+   141	                </div>
+   142	                <div class="mt-4 bg-gray-200 rounded-full h-3">
+   143	                    <div class="bg-red-500 h-3 rounded-full transition-all duration-500" 
+   144	                         style="width: 100%"></div>
+   145	                </div>
+   146	                <p class="text-xs text-gray-500 mt-2">
+   147	                    💡 Mejora esperada: 3-4 semanas con protocolo completo
+   148	                </p>
+   149	            </div>
+   150	        </div>
+   151	
+   152	        <!-- Charts Section -->
+   153	        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+   154	            
+   155	            <!-- Weight Chart -->
+   156	            <div class="bg-white rounded-xl shadow-lg p-6">
+   157	                <h3 class="text-xl font-semibold text-gray-800 mb-4">
+   158	                    <i class="fas fa-chart-line text-blue-500"></i> Progreso de Peso (30 días)
+   159	                </h3>
+   160	                <div style="height: 300px;">
+   161	                    <canvas id="weightChart"></canvas>
+   162	                </div>
+   163	            </div>
+   164	
+   165	            <!-- Glucose Chart -->
+   166	            <div class="bg-white rounded-xl shadow-lg p-6">
+   167	                <h3 class="text-xl font-semibold text-gray-800 mb-4">
+   168	                    <i class="fas fa-chart-line text-red-500"></i> Glucosa (30 días)
+   169	                </h3>
+   170	                <div style="height: 300px;">
+   171	                    <canvas id="glucoseChart"></canvas>
+   172	                </div>
+   173	            </div>
+   174	        </div>
+   175	
+   176	        <!-- Today's Protocol Checklist -->
+   177	        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+   178	            <h3 class="text-xl font-semibold text-gray-800 mb-4">
+   179	                <i class="fas fa-tasks text-green-500"></i> Protocolo de Hoy
+   180	            </h3>
+   181	            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+   182	                <div class="protocol-item">
+   183	                    <input type="checkbox" id="task1" class="task-checkbox">
+   184	                    <label for="task1">
+   185	                        <span class="time">7:00 AM</span> - Despertar + ALA 600mg + ALCAR 1000mg (ayunas)
+   186	                    </label>
+   187	                </div>
+   188	                <div class="protocol-item">
+   189	                    <input type="checkbox" id="task2" class="task-checkbox">
+   190	                    <label for="task2">
+   191	                        <span class="time">7:15 AM</span> - Shot Metabólico (vinagre + black seed oil + canela)
+   192	                    </label>
+   193	                </div>
+   194	                <div class="protocol-item">
+   195	                    <input type="checkbox" id="task3" class="task-checkbox">
+   196	                    <label for="task3">
+   197	                        <span class="time">7:30 AM</span> - Desayuno + Medicamentos + Suplementos
+   198	                    </label>
+   199	                </div>
+   200	                <div class="protocol-item">
+   201	                    <input type="checkbox" id="task4" class="task-checkbox">
+   202	                    <label for="task4">
+   203	                        <span class="time">8:00 AM</span> - Caminata 15-20 minutos
+   204	                    </label>
+   205	                </div>
+   206	                <div class="protocol-item">
+   207	                    <input type="checkbox" id="task5" class="task-checkbox">
+   208	                    <label for="task5">
+   209	                        <span class="time">3:00 PM</span> - ALCAR 1000mg (entre comidas)
+   210	                    </label>
+   211	                </div>
+   212	                <div class="protocol-item">
+   213	                    <input type="checkbox" id="task6" class="task-checkbox">
+   214	                    <label for="task6">
+   215	                        <span class="time">6:00 PM</span> - Cena + Benfotiamina 300mg
+   216	                    </label>
+   217	                </div>
+   218	            </div>
+   219	            <div class="mt-4 text-center">
+   220	                <span class="text-2xl font-bold text-green-600" id="protocolCompletion">0%</span>
+   221	                <span class="text-gray-600"> Completado</span>
+   222	            </div>
+   223	        </div>
+   224	
+   225	        <!-- Anti-Sedentary Alert -->
+   226	        <div class="bg-gradient-to-r from-orange-400 to-red-500 rounded-xl shadow-lg p-6 text-white mb-6">
+   227	            <div class="flex items-center justify-between flex-wrap">
+   228	                <div class="mb-4 lg:mb-0">
+   229	                    <h3 class="text-2xl font-bold mb-2">
+   230	                        <i class="fas fa-exclamation-triangle"></i> Recordatorio Anti-Sedentarismo
+   231	                    </h3>
+   232	                    <p class="text-lg">
+   233	                        🚨 Levántate cada 30 minutos y haz <strong>10-15 sentadillas</strong>
+   234	                    </p>
+   235	                    <p class="text-sm mt-2 opacity-90">
+   236	                        📊 Objetivo diario: 22 pausas = 220 sentadillas = -50 puntos glucosa
+   237	                    </p>
+   238	                </div>
+   239	                <div class="text-center">
+   240	                    <div class="bg-white text-orange-500 rounded-full w-24 h-24 flex items-center justify-center">
+   241	                        <div>
+   242	                            <div class="text-3xl font-bold" id="squatsToday">0</div>
+   243	                            <div class="text-xs">sentadillas</div>
+   244	                        </div>
+   245	                    </div>
+   246	                </div>
+   247	            </div>
+   248	            <button id="squatButton" class="mt-4 bg-white text-orange-500 font-bold py-3 px-6 rounded-lg hover:bg-gray-100 transition-all w-full">
+   249	                ✅ Completé mis sentadillas ahora
+   250	            </button>
+   251	        </div>
+   252	
+   253	        <!-- Quick Actions -->
+   254	        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+   255	            <a href="tracking.html" class="quick-action-card">
+   256	                <i class="fas fa-plus-circle text-3xl text-blue-500 mb-2"></i>
+   257	                <span>Agregar Datos Hoy</span>
+   258	            </a>
+   259	            <a href="analysis.html" class="quick-action-card">
+   260	                <i class="fas fa-download text-3xl text-green-500 mb-2"></i>
+   261	                <span>Exportar Reporte</span>
+   262	            </a>
+   263	            <a href="goals.html" class="quick-action-card">
+   264	                <i class="fas fa-trophy text-3xl text-yellow-500 mb-2"></i>
+   265	                <span>Ver Metas</span>
+   266	            </a>
+   267	            <a href="resources.html" class="quick-action-card">
+   268	                <i class="fas fa-book-open text-3xl text-purple-500 mb-2"></i>
+   269	                <span>Recursos</span>
+   270	            </a>
+   271	        </div>
+   272	
+   273	    </div>
+   274	
+   275	    <!-- Footer -->
+   276	    <footer class="bg-white shadow-lg mt-12 py-6">
+   277	        <div class="container mx-auto px-4 text-center text-gray-600">
+   278	            <p class="mb-2">
+   279	                💪 <strong>Reset Metabólico</strong> - Tu camino hacia una vida sin diabetes y dolor
+   280	            </p>
+   281	            <p class="text-sm">
+   282	                🔬 Todos los protocolos están respaldados por estudios científicos
+   283	            </p>
+   284	        </div>
+   285	    </footer>
+   286	
+   287	    <script src="js/main.js"></script>
+   288	</body>
+   289	</html>

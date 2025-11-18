@@ -1,0 +1,5 @@
+
+window.deleteEntry = deleteEntry;
+window.exportToCSV = exportToCSV;
+
+console.log('Tracking.js loaded successfully');

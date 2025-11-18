@@ -1,0 +1,31 @@
+function formatDate(dateString) {
+    const date = new Date(dateString + 'T00:00:00');
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return date.toLocaleDateString('es-ES', options);
+}
+
+function getGlucoseClass(glucose) {
+    if (glucose < 130) {
+        return 'glucose-normal';
+    } else if (glucose <= 180) {
+        return 'glucose-warning';
+    } else {
+        return 'glucose-high';
+    }
+}
+
+function getPainClass(pain) {
+    if (pain <= 3) {
+        return 'text-green-600 font-semibold';
+    } else if (pain <= 6) {
+        return 'text-yellow-600 font-semibold';
+    } else {
+        return 'text-red-600 font-semibold';
+    }
+}
+
+function deleteEntry(id) {
+    if (confirm('¿Estás seguro de eliminar esta entrada?')) {
+        DataManager.deleteEntry(id);
+        showNotification('Entrada eliminada');
+        displayHistoricalData();
